@@ -98,6 +98,26 @@ function validate(authtext,title,date,time,location,link) {
     
     return errors;
   }
+
+  function formatDate(dateString){
+    var splitDate = dateString.split("-");
+    var months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+    var currentMonth = months[parseInt(splitDate[1]) - 1];
+    return splitDate[2] + " " + currentMonth + " " + splitDate[0];
+  }
+  
+  function formatTime(timeString){
+    // Check correct time format and split into components
+    timeString = timeString.toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [timeString];
+
+  if (timeString.length > 1) { // If time format correct
+    timeString = timeString.slice (1);  // Remove full string match value
+    timeString[5] = +timeString[0] < 12 ? ' AM' : ' PM'; // Set AM/PM
+    timeString[0] = +timeString[0] % 12 || 12; // Adjust hours
+  }
+  return (timeString.join ('')); // return adjusted time or original string
+  }
+
 class TextFields extends React.Component {
   state = {
     authtext:'',
@@ -120,27 +140,30 @@ class TextFields extends React.Component {
   
   handleSubmit = (e) => {
     e.preventDefault();
-    const {authtext,title,date,time,location,link} = this.state;
+    const {authtext,title,type,date,time,location,link} = this.state;
     const errors = validate(authtext,title,date,time,location,link);
     if (errors.length > 0) {
         this.setState({ errors });
         return;
       }
     const data = {
-        "authtext":"hello"
+      title : title,
+      type : type,
+      date : formatDate(finalDate),
+      time : formatTime(finalTime),
+      location: location,
+      link: link
     }
     const output = JSON.stringify(data);
     
-    var url = 'https://exesto.serveo.net';
+    var url = 'https://exesto.serveo.net/addevent';
     
     
     fetch(url, {
       method: 'POST', 
       headers:{
-        'Access-Control-Allow-Origin':'http://127.0.0.1:3000',
-        'Access-Control-Allow-Methods': 'POST',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        'key':'7334D4CA5D474'
+        'key': authtext,
+        'event': output
       }
     }).then(res => res.json())
     .then(response => console.log('Success:', JSON.stringify(response)))
@@ -171,14 +194,13 @@ class TextFields extends React.Component {
           value={this.state.authtext}
           //defaultValue="Default Value"
           className={classes.textField}
-          
           onChange = {this.handleChange('authtext')}
           margin="normal"
           
         />    
         <TextField
           required
-          id="select-type"
+          id="selecttype"
           select
           label="Type"
           className={classes.textField}
@@ -227,7 +249,6 @@ class TextFields extends React.Component {
         id="time"
         label="Select Time"
         type="time"
-        va
         defaultValue={finalTime}
         className={classes.textField}
         margin="normal"
