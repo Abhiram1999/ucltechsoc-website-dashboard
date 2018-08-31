@@ -2,8 +2,9 @@
   "name": "website_dashboard",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://www.ucltechsoc.com/website_dashboard/",
+  "homepage": "https://www.ucltechsoc.com/dashboard_build",
   "dependencies": {
+    "@material-ui/core": "^3.0.1",
     "gh-pages": "^1.2.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
