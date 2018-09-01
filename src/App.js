@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
+import TabContainer from './TabContainer';
 
 class App extends Component {
   render() {
@@ -14,14 +15,12 @@ class App extends Component {
         <header className="App-header">
         
          <a href = "ucltechsoc.com" ><img src={techsoc} className="App-logo" alt="logo"/> </a>
-          <h1 className="App-title">Events Form</h1>
+          <h1 className="App-title">Techsoc Committee Dashboard</h1>
         </header>
         <p className="App-intro">
           
         </p>
-        <div className = "form">
-        <EventForm/>
-        </div>
+        <TabContainer/>
       </div>
     );
   }
