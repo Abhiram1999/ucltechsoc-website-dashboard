@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
-import validator from 'validator';
 import { confirmAlert } from 'react-confirm-alert'; 
 import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 import EventCard from './EventCard.js';
@@ -110,21 +109,6 @@ function validate(authtext,title,date,time,location,link) {
       if (link.length === 0) {
         errors.push("Link can't be empty");
       }
-      /*
-      Needs to be tested first
-      if(!validator.isAfter(date)){
-          errors.push("Date cannot be before today's date");
-      }
-      
-      var datetime = finalDate +'T' + time + 'Z';
-      alert(datetime);
-      
-      if(currentDate > datetime){
-          errors.push("Time cannot be before today's time")
-      }
-
-      */
-
     
     return errors;
   }
