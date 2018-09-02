@@ -109,21 +109,6 @@ function validate(authtext,title,date,time,location,link) {
       if (link.length === 0) {
         errors.push("Link can't be empty");
       }
-      /*
-      Needs to be tested first
-      if(!validator.isAfter(date)){
-          errors.push("Date cannot be before today's date");
-      }
-      
-      var datetime = finalDate +'T' + time + 'Z';
-      alert(datetime);
-      
-      if(currentDate > datetime){
-          errors.push("Time cannot be before today's time")
-      }
-
-      */
-
     
     return errors;
   }
