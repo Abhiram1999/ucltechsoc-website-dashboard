@@ -4,12 +4,15 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
-
+import validator from 'validator';
+import { confirmAlert } from 'react-confirm-alert'; 
+import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
+import EventCard from './EventCard.js';
 
 var currentDate = new Date();
-var date = currentDate.getDate().toString();
-if(date.length == 1){
-    date = '0' + date;
+var fdate = currentDate.getDate().toString();
+if(fdate.length == 1){
+    fdate = '0' + fdate;
 }
 
 var month = currentDate.getMonth();
@@ -29,7 +32,7 @@ var minutes = currentDate.getMinutes().toString();
 if(minutes.length == 1){
     minutes = '0' + minutes;
 }
-var finalDate = year+'-'+month+'-'+date;
+var finalDate = year+'-'+month+'-'+fdate;
 var finalTime = hours+':'+minutes;
 
 const styles = theme => ({
@@ -76,24 +79,38 @@ function validate(authtext,title,date,time,location,link) {
 
     const errors = [];
     if (authtext.length === 0) {
-        errors.push("authtext can't be empty");
+        errors.push("Auth Text can't be empty");
       }
       if (title.length === 0) {
-        errors.push("title can't be empty");
+        errors.push("Title can't be empty");
       }
     
       if (date.length === 0) {
-        errors.push("date can't be empty");
+        errors.push("Date can't be empty");
       }
       if (time.length === 0) {
-        errors.push("time can't be empty");
+        errors.push("Time can't be empty");
       }
       if (location.length === 0) {
-        errors.push("location can't be empty");
+        errors.push("Location can't be empty");
       }
       if (link.length === 0) {
-        errors.push("link can't be empty");
+        errors.push("Link can't be empty");
       }
+      /*
+      Needs to be tested first
+      if(!validator.isAfter(date)){
+          errors.push("Date cannot be before today's date");
+      }
+      
+      var datetime = finalDate +'T' + time + 'Z';
+      alert(datetime);
+      
+      if(currentDate > datetime){
+          errors.push("Time cannot be before today's time")
+      }
+
+      */
 
     
     return errors;
@@ -124,8 +141,8 @@ class TextFields extends React.Component {
     name: '',
     type:'',
     title:'',
-    date:{finalDate},
-    time:{finalTime},
+    date:formatDate(finalDate),
+    time:formatTime(finalTime),
     location:'',
     link:'',
     errors:[],
@@ -143,9 +160,33 @@ class TextFields extends React.Component {
     const {authtext,title,type,date,time,location,link} = this.state;
     const errors = validate(authtext,title,date,time,location,link);
     if (errors.length > 0) {
+        
         this.setState({ errors });
+        this.setState({errorText:errors[0]});
+        document.getElementById("errortext").innerHTML = "<p>" + errors.join("</p><p>") + "</p>";
         return;
       }
+    
+    else{
+        
+        confirmAlert({
+            title: 'Confirm to submit',
+            message: 'Are you sure to do this.',
+            buttons: [
+              {
+                label: 'Yes',
+                onClick: () => alert('Click Yes')
+              },
+              {
+                label: 'No',
+                onClick: () => alert('Click No')
+              }
+            ],
+            childrenElement: () => <EventCard title={title} date={date} time={time} location={location} image="picnic01"  url="ucltechsoc" tag={type}/>
+          })
+        //document.getElementById("errortext").innerHTML = "form submitted";
+        //window.location.reload();
+    }
     const data = {
       title : title,
       type : type,
@@ -154,7 +195,7 @@ class TextFields extends React.Component {
       location: location,
       link: link
     }
-    const output = JSON.stringify(data);
+     const output = JSON.stringify(data);
     
     var url = 'https://exesto.serveo.net/addevent';
     
@@ -182,10 +223,9 @@ class TextFields extends React.Component {
     return (
     <div>
         <div className = "error">
-        {errors.map(error => (
-          <p key={error}>Error: {error}</p>
-        ))}
+            <p id = "errortext"></p> {/*Don't worry bro, the code on line 152 puts the errors here dynamically if there are any*/}      
         </div>
+        
       <form noValidate className={classes.container}  onSubmit = {this.handleSubmit} >
         <TextField
           required
