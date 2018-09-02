@@ -8,8 +8,8 @@ import validator from 'validator';
 import { confirmAlert } from 'react-confirm-alert'; 
 import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 import EventCard from './EventCard.js';
-import "./ConnectionConstants.js";
-
+import {rootDomain,addEventLink} from "./ConnectionConstants.js";
+//7334D4CA5D474
 var currentDate = new Date();
 var fdate = currentDate.getDate().toString();
 if(fdate.length == 1){
@@ -53,6 +53,17 @@ const styles = theme => ({
   
 });
 
+function submitForm(url,authtext,output){
+    fetch(url, {
+        method: 'POST', 
+        headers:{
+          'key': authtext,
+          'event': output
+        }
+      }).then(res => res.json())
+      .then(response => console.log('Success:', JSON.stringify(response)))
+      .catch(error => console.error('Error:', error));
+}
 const types = [
   {
     value: 'Talks',
@@ -79,6 +90,7 @@ const types = [
 function validate(authtext,title,date,time,location,link) {
 
     const errors = [];
+    console.log(date + "T" + time);
     if (authtext.length === 0) {
         errors.push("Auth Text can't be empty");
       }
@@ -142,8 +154,8 @@ class TextFields extends React.Component {
     name: '',
     type:'',
     title:'',
-    date:formatDate(finalDate),
-    time:formatTime(finalTime),
+    date:finalDate,
+    time:finalTime,
     location:'',
     link:'',
     errors:[],
@@ -159,7 +171,21 @@ class TextFields extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
     const {authtext,title,type,date,time,location,link} = this.state;
+    console.log(typeof authtext);
     const errors = validate(authtext,title,date,time,location,link);
+
+    const data = {
+        title : title,
+        type : type,
+        date : formatDate(finalDate),
+        time : formatTime(finalTime),
+        location: location,
+        link: link
+      }
+       const output = JSON.stringify(data);
+      
+      var url = rootDomain + addEventLink;
+      
     if (errors.length > 0) {
         
         this.setState({ errors });
@@ -176,42 +202,22 @@ class TextFields extends React.Component {
             buttons: [
               {
                 label: 'Yes',
-                onClick: () => alert('Click Yes')
+                onClick: () => {
+                    submitForm(url,authtext,output);
+                    //alert("Click Yes")
+                }
               },
               {
                 label: 'No',
                 onClick: () => alert('Click No')
               }
             ],
-            childrenElement: () => <EventCard title={title} date={date} time={time} location={location} image="picnic01"  url="ucltechsoc" tag={type}/>
+            childrenElement: () => <EventCard title={title} date={formatDate(date)} time={formatTime(time)} location={location} image="picnic01"  url="ucltechsoc" tag={type}/>
           })
         //document.getElementById("errortext").innerHTML = "form submitted";
         //window.location.reload();
     }
-    const data = {
-      title : title,
-      type : type,
-      date : formatDate(finalDate),
-      time : formatTime(finalTime),
-      location: location,
-      link: link
-    }
-     const output = JSON.stringify(data);
-    
-    var url = rootDomain + addEventLink;
-    
-    
-    fetch(url, {
-      method: 'POST', 
-      headers:{
-        'key': authtext,
-        'event': output
-      }
-    }).then(res => res.json())
-    .then(response => console.log('Success:', JSON.stringify(response)))
-    .catch(error => console.error('Error:', error));
-      
-     
+   
     
   }
 
@@ -227,7 +233,7 @@ class TextFields extends React.Component {
             <p id = "errortext"></p> {/*Don't worry bro, the code on line 152 puts the errors here dynamically if there are any*/}      
         </div>
         
-      <form noValidate className={classes.container}  onSubmit = {this.handleSubmit} >
+      <form noValidate className={classes.container} >
         <TextField
           required
           id="authtext"
