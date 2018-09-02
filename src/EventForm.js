@@ -8,6 +8,7 @@ import validator from 'validator';
 import { confirmAlert } from 'react-confirm-alert'; 
 import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 import EventCard from './EventCard.js';
+import "./ConnectionConstants.js";
 
 var currentDate = new Date();
 var fdate = currentDate.getDate().toString();
@@ -197,7 +198,7 @@ class TextFields extends React.Component {
     }
      const output = JSON.stringify(data);
     
-    var url = 'https://exesto.serveo.net/addevent';
+    var url = rootDomain + addEventLink;
     
     
     fetch(url, {
