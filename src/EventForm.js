@@ -8,6 +8,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 import EventCard from './EventCard.js';
 import {rootDomain,addEventLink} from "./ConnectionConstants.js";
+import InputAdornment from '@material-ui/core/InputAdornment';
 //7334D4CA5D474
 var currentDate = new Date();
 var fdate = currentDate.getDate().toString();
@@ -89,7 +90,7 @@ const types = [
 function validate(authtext,title,date,time,location,link) {
 
     const errors = [];
-    console.log(date + "T" + time);
+    //console.log(date + "T" + time);
     if (authtext.length === 0) {
         errors.push("Auth Text can't be empty");
       }
@@ -109,6 +110,12 @@ function validate(authtext,title,date,time,location,link) {
       if (link.length === 0) {
         errors.push("Link can't be empty");
       }
+
+      var datetime = new Date(date + "T" + time)
+      if(currentDate > datetime){
+          errors.push("Date and Time cannot be before today's");
+      }
+
     
     return errors;
   }
@@ -135,13 +142,13 @@ function validate(authtext,title,date,time,location,link) {
 class TextFields extends React.Component {
   state = {
     authtext:'',
-    name: '',
     type:'',
     title:'',
     date:finalDate,
     time:finalTime,
     location:'',
     link:'',
+    img_url:'',
     errors:[],
 
   };
@@ -154,7 +161,7 @@ class TextFields extends React.Component {
   
   handleSubmit = (e) => {
     e.preventDefault();
-    const {authtext,title,type,date,time,location,link} = this.state;
+    const {authtext,title,type,date,time,location,link,img_url} = this.state;
     console.log(typeof authtext);
     const errors = validate(authtext,title,date,time,location,link);
 
@@ -164,7 +171,8 @@ class TextFields extends React.Component {
         date : formatDate(finalDate),
         time : formatTime(finalTime),
         location: location,
-        link: link
+        link: "https://" + link,
+        img_url : "https://" + img_url
       }
        const output = JSON.stringify(data);
       
@@ -179,7 +187,7 @@ class TextFields extends React.Component {
       }
     
     else{
-        
+      document.getElementById("errortext").innerHTML = "Respond to Prompt";
         confirmAlert({
             title: 'Confirm to submit',
             message: 'Are you sure to do this.',
@@ -198,7 +206,7 @@ class TextFields extends React.Component {
             ],
             childrenElement: () => <EventCard title={title} date={formatDate(date)} time={formatTime(time)} location={location} image="picnic01"  url="ucltechsoc" tag={type}/>
           })
-        //document.getElementById("errortext").innerHTML = "form submitted";
+        
         //window.location.reload();
     }
    
@@ -214,7 +222,7 @@ class TextFields extends React.Component {
     return (
     <div>
         <div className = "error">
-            <p id = "errortext"></p> {/*Don't worry bro, the code on line 152 puts the errors here dynamically if there are any*/}      
+            <p id = "errortext" style = {{color:"red"}}></p> {/*Don't worry bro, the code on line 152 puts the errors here dynamically if there are any*/}      
         </div>
         
       <form noValidate className={classes.container} >
@@ -311,8 +319,25 @@ class TextFields extends React.Component {
           className={classes.textField}
           margin="normal"
           onChange = {this.handleChange('link')}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">https://</InputAdornment>,
+          }}
         />
-    
+        <TextField
+          required
+          id="multiline-static"
+          label="Image Url"
+          multiline
+          rows="1"
+          //defaultValue="Default Value"
+          className={classes.textField}
+          margin="normal"
+          onChange = {this.handleChange('img_url')}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">https://</InputAdornment>,
+          }}
+        />
+
       </form>
       
       <button onClick = {this.handleSubmit} type="submit" >Submit</button>

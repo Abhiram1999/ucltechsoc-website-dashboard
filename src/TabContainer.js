@@ -6,7 +6,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import EventForm from './EventForm';
-
+import DeleteEvent from './DeleteEvent'
 function TabContainer(props) {
   return (
     <Typography component="div" style={{ padding: 8 * 3 }}>
@@ -59,11 +59,13 @@ class ScrollableTabsButtonAuto extends React.Component {
             <Tab label="Add Event" />
             <Tab label="Add Job Posting" />
             <Tab label="Add Block Post" />
+            <Tab label = "Delete Event"/>
           </Tabs>
         </AppBar>
         {value === 0 && <TabContainer><EventForm/></TabContainer>}
         {value === 1 && <TabContainer>Item Two</TabContainer>}
         {value === 2 && <TabContainer>Item Three</TabContainer>}
+        {value === 3 && <TabContainer><DeleteEvent/></TabContainer>}
       </div>
     );
   }
