@@ -133,12 +133,12 @@ class TextFields extends React.Component {
               getEvents(geturl);
               this.setState({authtext:"", event: ""});
               document.getElementById("errortext").innerHTML = "";
+              document.getElementById("successtext").innerHTML = "Event Successfully Deleted!";
             }
           },
           {
             label: 'No',
             onClick: () => {
-              document.getElementById("errortext").innerHTML = "";
               return;
             }
           }
@@ -155,11 +155,15 @@ class TextFields extends React.Component {
          <div className = "error">
             <p id = "errortext" style = {{color:"red"}}></p>       
         </div>
+        <div className = "success">
+            <p id = "successtext" style = {{color:"green"}}></p>
+        </div>
       <form className={classes.container} noValidate>
         <TextField
           id="authtext"
           label="Auth Text"
           className={classes.textField}
+          value={this.state.authtext}
           onChange={this.handleChange('authtext')}
           margin="normal"
           required
