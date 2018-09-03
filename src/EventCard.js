@@ -15,6 +15,7 @@ const styles = {
   },
   media: {
     height: 0,
+    objectFit: 'cover',
     paddingTop: '56.25%', // 16:9
   },
   cardActions: {
@@ -42,9 +43,9 @@ const styles = {
 
 function EventCard(props) {
   const { classes } = props;
-/*
-  function getImage(i){
-      if(i == "picnic01"){
+
+  /* function getImage(i){
+      if(i == "https://picnic01"){
         return require('./static/events/picnic01.png');
       } else if(i == "default-talks"){
         return require('./static/events/default-talks.png');
@@ -54,11 +55,13 @@ function EventCard(props) {
         return require('./static/events/default-projects.png');
       } else if(i == "default-socials"){
         return require('./static/events/default-socials.png');
+      } else if(i == "default-others"){
+        return require('./static/events/default-others.png');
       } else {
-          return require('./static/events/default-others.png');
+          return i;
       }
-  }
-*/
+  } */
+
   function getTagInfo(tag){
     if(tag === "Talks"){
       return "Find out about the latest tech trends from speakers throughout the industry.";
@@ -69,9 +72,23 @@ function EventCard(props) {
     } else if(tag === "Socials"){
       return "Hang out and meet members from the society as well as the committee and make awesome new friends!";
     } else {
-      return "Something that can't be simply categorized."
+      return "Something that can't simply be categorized."
     }
   }
+
+  /* function getDefaultImage(tag){
+    if(tag === "Talks"){
+      return "default-talks";
+    } else if(tag === "Hackathons"){
+      return "default-hackathons";
+    } else if(tag === "Projects"){
+      return "default-projects";
+    } else if(tag === "Socials"){
+      return "default-socials";
+    } else {
+      return "default-others";
+    }
+  } */
 
   EventCard.defaultProps = {
     title: "Default Title",
@@ -79,8 +96,8 @@ function EventCard(props) {
     time: "00:00",
     location: "UCL Main Quad",
     tag: "Others",
-    image: 'meh',
-    url:"ucltechsoc",
+    image: "",
+    url:"https://www.facebook.com/ucltechsoc",
 };
 
   const title = props.title;
@@ -95,11 +112,10 @@ function EventCard(props) {
       <Card className={classes.card}>
         <CardMedia
           className={classes.media}
-          //image={getImage(imageUrl)}
           title={title}
         />
         <CardContent>
-          <Typography gutterBottom variant="headline" component="h2">
+          <Typography gutterBottom variant="title" component="h2" style={{ overflow:"hidden", textOverflow:"ellipsis", height:"3em", marginTop:"0.5em"}}>
             {title}
           </Typography>
           <Typography component="p">
@@ -114,7 +130,7 @@ function EventCard(props) {
             {tags}
           </Button>
           </Tooltip>
-          <a target= "_new" href={"https://www.facebook.com/"+url}>
+          <a target= "_new" href={url}>
           <Button size="small" className={classes.button2}>
             Event Info
           </Button>

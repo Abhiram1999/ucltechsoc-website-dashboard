@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
+import { confirmAlert } from 'react-confirm-alert'; 
 import {rootDomain, getEventsLink,deleteEventsLink} from './ConnectionConstants';
 const styles = theme => ({
   container: {
@@ -14,23 +15,31 @@ const styles = theme => ({
     marginRight: theme.spacing.unit,
     width: 200,
   },
+  textFieldOptions: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 500,
+  },
   menu: {
-    width: 200,
+    width: 500,
   },
 });
 
 var events = [];
+var eventIDs = [];
 
 function renderResponse(jsonResponse){
   let R_events = [];
+  let R_eventIDs = [];
   if(!jsonResponse){
     console.log(jsonResponse.state);
   }
   for(let i = 0;i<jsonResponse.length;i++){
     R_events.push(jsonResponse[i]['data']['title']);
+    R_eventIDs.push(jsonResponse[i]['id']);
   }
-  console.log(R_events);
-  return R_events;
+  events = R_events;
+  eventIDs = R_eventIDs;
 }
 
 function getEvents(url){
@@ -43,9 +52,7 @@ function getEvents(url){
     //alert("Site not working");
     console.log(networkError.message)}
 ).then(jsonResponse => {
-  console.log(jsonResponse);
-  events = renderResponse(jsonResponse);
-
+  renderResponse(jsonResponse);
 })
 }
 
@@ -64,13 +71,12 @@ function validate(authtext,event){
 const delurl = rootDomain + deleteEventsLink;
 const geturl = rootDomain + getEventsLink;
 //Uncomment the below line when the server is running
-getEvents(geturl);
+    getEvents(geturl);
 
 class TextFields extends React.Component {
   state = {
     authtext:'',
     event:'',
-    
   };
 
   handleChange = name => event => {
@@ -78,16 +84,29 @@ class TextFields extends React.Component {
       [name]: event.target.value,
     });
   };
+
+  getEventID = (eventName) => {
+    var index = -1;
+    for(var i = 0; i < events.length; i++){
+      if(events[i] === eventName){
+        index = i;
+      }
+    }
+    if(index != -1){
+      return eventIDs[index];
+    } else {
+      return index;
+    }
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
-    const {authtext,event} = this.state;
+    const {authtext,event, id} = this.state;
     const errors = validate(authtext,event);
     const data = {
       authtext:authtext,
       event:event
     }
-
-    const output = JSON.stringify(data);
 
     if(errors.length > 0){
       document.getElementById("errortext").innerHTML = "<p>" + errors.join("</p><p>") + "</p>";
@@ -95,23 +114,42 @@ class TextFields extends React.Component {
     }
     else{
       document.getElementById("errortext").innerHTML = "Respond to Prompt";
-      /*
-      fetch(url,{
-        method : 'POST',
-        headers : {
-          'key' : authtext,
-          'event':output
-        }
-      }).then(res => res.json())
-      .then(response => console.log('Success:', JSON.stringify(response)))
-      .catch(error => console.error('Error:', error));
-      */
+      confirmAlert({
+        title: 'Confirm to submit',
+        message: 'Are you sure to do this.',
+        buttons: [
+          {
+            label: 'Yes',
+            onClick: () => {
+               fetch(delurl,{
+                method : 'POST',
+                headers : {
+                  'key' : authtext,
+                  'event_id': this.getEventID(event),
+                }
+              }).then(res => res.json())
+              .then(response => console.log('Success:', JSON.stringify(response)))
+              .catch(error => console.error('Error:', error)); 
+              getEvents(geturl);
+              this.setState({authtext:"", event: ""});
+              document.getElementById("errortext").innerHTML = "";
+            }
+          },
+          {
+            label: 'No',
+            onClick: () => {
+              document.getElementById("errortext").innerHTML = "";
+              return;
+            }
+          }
+        ],
+      })
     }
        
   }
+
   render() {
     const { classes } = this.props;
-    console.log(events);
     return (
       <div>
          <div className = "error">
@@ -132,7 +170,8 @@ class TextFields extends React.Component {
           id="select-event"
           select
           label="Select Event"
-          className={classes.textField}
+          className={classes.textFieldOptions}
+          value = {this.state.event}
           onChange={this.handleChange('event')}
           SelectProps={{
             MenuProps: {
@@ -144,8 +183,8 @@ class TextFields extends React.Component {
         >
 
           {events.map(option => (
-            <MenuItem key={events[0]} value={events[0]}>
-              {events[0]}
+            <MenuItem key={option} value={option}>
+              {option}
             </MenuItem>
           ))}
         </TextField>

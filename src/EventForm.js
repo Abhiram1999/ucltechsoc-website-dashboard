@@ -201,10 +201,13 @@ class TextFields extends React.Component {
               },
               {
                 label: 'No',
-                onClick: () => alert('Click No')
+                onClick: () => {
+                  document.getElementById("errortext").innerHTML = "";
+                  return;
+                }
               }
             ],
-            childrenElement: () => <EventCard title={title} date={formatDate(date)} time={formatTime(time)} location={location} image="picnic01"  url="ucltechsoc" tag={type}/>
+            childrenElement: () => <EventCard title={title} date={formatDate(date)} time={formatTime(time)} location={location} url={link} tag={type}/>
           })
         
         //window.location.reload();
@@ -324,7 +327,6 @@ class TextFields extends React.Component {
           }}
         />
         <TextField
-          required
           id="multiline-static"
           label="Image Url"
           multiline

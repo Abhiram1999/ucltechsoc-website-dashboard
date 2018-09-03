@@ -22,9 +22,9 @@ TabContainer.propTypes = {
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    paddingLeft: '10%',
-    paddingRight: '10%',
-    backgroundColor: theme.palette.background.paper,
+    marginLeft: '10%',
+    marginRight: '10%',
+    backgroundColor: "#eeeeee",
   },
   typography: {
     padding: theme.spacing.unit * 4,
@@ -56,16 +56,16 @@ class ScrollableTabsButtonAuto extends React.Component {
             scrollable
             scrollButtons="auto"
           >
-            <Tab label="Add Event" />
-            <Tab label="Add Job Posting" />
-            <Tab label="Add Block Post" />
-            <Tab label = "Delete Event"/>
+            <Tab label= "Add Event" />
+            <Tab label = "Delete Event" />
+            <Tab label= "Add Job Posting" />
+            <Tab label= "Add Block Post" />
           </Tabs>
         </AppBar>
         {value === 0 && <TabContainer><EventForm/></TabContainer>}
-        {value === 1 && <TabContainer>Item Two</TabContainer>}
+        {value === 1 && <TabContainer><DeleteEvent/></TabContainer>}
         {value === 2 && <TabContainer>Item Three</TabContainer>}
-        {value === 3 && <TabContainer><DeleteEvent/></TabContainer>}
+        {value === 3 && <TabContainer>Item Four</TabContainer>}
       </div>
     );
   }
