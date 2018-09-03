@@ -139,8 +139,28 @@ function validate(authtext,title,date,time,location,link) {
   return (timeString.join ('')); // return adjusted time or original string
   }
 
+  function formatLinks(linkString){
+    if (!/^https?:\/\//i.test(linkString)) {
+    linkString = 'http://' + linkString;
+    }
+    return linkString;
+  }
+
 class TextFields extends React.Component {
   state = {
+    authtext:'',
+    type:'',
+    title:'',
+    date:finalDate,
+    time:finalTime,
+    location:'',
+    link:'',
+    img_url:'',
+    errors:[],
+
+  };
+
+  initialState = {
     authtext:'',
     type:'',
     title:'',
@@ -162,7 +182,7 @@ class TextFields extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
     const {authtext,title,type,date,time,location,link,img_url} = this.state;
-    console.log(typeof authtext);
+    console.log(img_url);
     const errors = validate(authtext,title,date,time,location,link);
 
     const data = {
@@ -171,8 +191,8 @@ class TextFields extends React.Component {
         date : formatDate(finalDate),
         time : formatTime(finalTime),
         location: location,
-        link: "https://" + link,
-        img_url : "https://" + img_url
+        link: formatLinks(link),
+        img_url : formatLinks(img_url)
       }
        const output = JSON.stringify(data);
       
@@ -187,7 +207,6 @@ class TextFields extends React.Component {
       }
     
     else{
-      document.getElementById("errortext").innerHTML = "Respond to Prompt";
         confirmAlert({
             title: 'Confirm to submit',
             message: 'Are you sure to do this.',
@@ -196,18 +215,19 @@ class TextFields extends React.Component {
                 label: 'Yes',
                 onClick: () => {
                     submitForm(url,authtext,output);
-                    //alert("Click Yes")
+                    this.setState(this.initialState);
+                    document.getElementById("errortext").innerHTML = "";
+                    document.getElementById("successtext").innerHTML = "Event Published Successfully!";
                 }
               },
               {
                 label: 'No',
                 onClick: () => {
-                  document.getElementById("errortext").innerHTML = "";
                   return;
                 }
               }
             ],
-            childrenElement: () => <EventCard title={title} date={formatDate(date)} time={formatTime(time)} location={location} url={link} tag={type}/>
+            childrenElement: () => <EventCard title={title} date={formatDate(date)} time={formatTime(time)} location={location} url={link} tag={type} imageUrl={img_url}/>
           })
         
         //window.location.reload();
@@ -226,6 +246,9 @@ class TextFields extends React.Component {
     <div>
         <div className = "error">
             <p id = "errortext" style = {{color:"red"}}></p> {/*Don't worry bro, the code on line 152 puts the errors here dynamically if there are any*/}      
+        </div>
+        <div className = "success">
+            <p id = "successtext" style = {{color:"green"}}></p> {/*Don't worry bro, the code on line 152 puts the errors here dynamically if there are any*/}      
         </div>
         
       <form noValidate className={classes.container} >
@@ -277,6 +300,7 @@ class TextFields extends React.Component {
         id="date"
         label="Select Date"
         type="date"
+        value = {this.state.date}
         defaultValue={finalDate}
         className={classes.textField}
         onChange={this.handleChange('date')}
@@ -291,6 +315,7 @@ class TextFields extends React.Component {
         id="time"
         label="Select Time"
         type="time"
+        value = {this.state.time}
         defaultValue={finalTime}
         className={classes.textField}
         margin="normal"
@@ -308,6 +333,7 @@ class TextFields extends React.Component {
           label="Location"
           multiline
           rows="1"
+          value = {this.state.location}
           className={classes.textField}
           margin="normal"
           onChange = {this.handleChange('location')}
@@ -319,6 +345,7 @@ class TextFields extends React.Component {
           multiline
           rows="1"
           //defaultValue="Default Value"
+          value = {this.state.link}
           className={classes.textField}
           margin="normal"
           onChange = {this.handleChange('link')}
@@ -332,6 +359,7 @@ class TextFields extends React.Component {
           multiline
           rows="1"
           //defaultValue="Default Value"
+          value = {this.state.img_url}
           className={classes.textField}
           margin="normal"
           onChange = {this.handleChange('img_url')}

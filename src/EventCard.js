@@ -44,23 +44,9 @@ const styles = {
 function EventCard(props) {
   const { classes } = props;
 
-  /* function getImage(i){
-      if(i == "https://picnic01"){
-        return require('./static/events/picnic01.png');
-      } else if(i == "default-talks"){
-        return require('./static/events/default-talks.png');
-      } else if(i == "default-hackathons"){
-        return require('./static/events/default-hackathons.png');
-      } else if(i == "default-projects"){
-        return require('./static/events/default-projects.png');
-      } else if(i == "default-socials"){
-        return require('./static/events/default-socials.png');
-      } else if(i == "default-others"){
-        return require('./static/events/default-others.png');
-      } else {
+   function getImage(i){
           return i;
-      }
-  } */
+  } 
 
   function getTagInfo(tag){
     if(tag === "Talks"){
@@ -112,6 +98,7 @@ function EventCard(props) {
       <Card className={classes.card}>
         <CardMedia
           className={classes.media}
+          image={getImage(imageUrl)}
           title={title}
         />
         <CardContent>
