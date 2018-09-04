@@ -128,7 +128,7 @@ class TextFields extends React.Component {
                 method : 'POST',
                 headers : {
                   'key' : authtext,
-                  'event_id': this.getSponsorID(sponsor),
+                  'sponsor_id': this.getSponsorID(sponsor),
                 }
               }).then(res => res.json())
               .then(response => console.log('Success:', JSON.stringify(response)))

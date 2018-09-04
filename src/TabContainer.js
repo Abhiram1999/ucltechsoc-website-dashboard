@@ -60,18 +60,14 @@ class ScrollableTabsButtonAuto extends React.Component {
           >
             <Tab label= "Add Event" />
             <Tab label = "Delete Event" />
-            <Tab label= "Add Job Posting" />
-            <Tab label= "Add Block Post" />
             <Tab label="Add Sponsor"/>
             <Tab label="Delete Sponsor"/>
           </Tabs>
         </AppBar>
         {value === 0 && <TabContainer><EventForm/></TabContainer>}
         {value === 1 && <TabContainer><DeleteEvent/></TabContainer>}
-        {value === 2 && <TabContainer>Item Three</TabContainer>}
-        {value === 3 && <TabContainer>Item Four</TabContainer>}
-        {value === 4 && <TabContainer><SponsorForm/></TabContainer>}
-        {value === 5 && <TabContainer><DeleteSponsor/></TabContainer>}
+        {value === 2 && <TabContainer><SponsorForm/></TabContainer>}
+        {value === 3 && <TabContainer><DeleteSponsor/></TabContainer>}
       </div>
     );
   }
