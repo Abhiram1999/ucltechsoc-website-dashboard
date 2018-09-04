@@ -201,12 +201,14 @@ class TextFields extends React.Component {
     if (errors.length > 0) {
         
         this.setState({ errors });
-        this.setState({errorText:errors[0]});
+        //this.setState({errorText:errors[0]});
         document.getElementById("errortext").innerHTML = "<p>" + errors.join("</p><p>") + "</p>";
         return;
       }
     
     else{
+      
+
         confirmAlert({
             title: 'Confirm to submit',
             message: 'Are you sure to do this.',

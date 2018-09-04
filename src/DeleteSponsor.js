@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import { confirmAlert } from 'react-confirm-alert'; 
-import {rootDomain, getEventsLink,deleteEventsLink} from './ConnectionConstants';
+import {rootDomain, getSponsorsLink,deleteSponsorsLink} from './ConnectionConstants';
 const styles = theme => ({
   container: {
     display: 'flex',
@@ -25,25 +25,25 @@ const styles = theme => ({
   },
 });
 
-var events = [];
-var eventIDs = [];
+var sponsors = [];
+var sponsorIDs = [];
 
 function renderResponse(jsonResponse){
-  let R_events = [];
-  let R_eventIDs = [];
+  let R_sponsors = [];
+  let R_sponsorIDs = [];
 
   if(!jsonResponse){
     console.log(jsonResponse.state);
   }
   for(let i = 0;i<jsonResponse.length;i++){
-    R_events.push(jsonResponse[i]['data']['title']);
-    R_eventIDs.push(jsonResponse[i]['id']);
+    R_sponsors.push(jsonResponse[i]['sponsor']['name']);
+    R_sponsorIDs.push(jsonResponse[i]['id']);
   }
-  events = R_events;
-  eventIDs = R_eventIDs;
+  sponsors = R_sponsors;
+  sponsorIDs = R_sponsorIDs;
 }
 
-function getEvents(url){
+function getSponsors(url){
   fetch(url).then(response => {
     if(response.ok){
       return response.json();
@@ -53,48 +53,49 @@ function getEvents(url){
     //alert("Site not working");
     console.log(networkError.message)}
 ).then(jsonResponse => {
+    console.log(jsonResponse);
   renderResponse(jsonResponse);
 })
 }
 
-function validate(authtext,event){
+function validate(authtext,sponsor){
   let errors = [];
   if(authtext.length === 0){
     errors.push("Auth Text can't be empty");
   }
 
-  if(event.length === 0){
-    errors.push("Event can't be empty");
+  if(sponsor.length === 0){
+    errors.push("Sponsor can't be empty");
   }
   return errors;
 }
 
-const delurl = rootDomain + deleteEventsLink;
-const geturl = rootDomain + getEventsLink;
+const delurl = rootDomain + deleteSponsorsLink;
+const geturl = rootDomain + getSponsorsLink;
 //Uncomment the below line when the server is running
-getEvents(geturl);
-
+getSponsors(geturl);
+console.log(sponsors);
 class TextFields extends React.Component {
   state = {
     authtext:'',
-    event:'',
+    sponsor:'',
   };
-  
+
   handleChange = name => event => {
     this.setState({
       [name]: event.target.value,
     });
   };
 
-  getEventID = (eventName) => { 
+  getSponsorID = (sponsorName) => {
     var index = -1;
-    for(var i = 0; i < events.length; i++){
-      if(events[i] === eventName){
+    for(var i = 0; i < sponsors.length; i++){
+      if(sponsors[i] === sponsorName){
         index = i;
       }
     }
     if(index != -1){
-      return eventIDs[index];
+      return sponsorIDs[index];
     } else {
       return index;
     }
@@ -102,14 +103,14 @@ class TextFields extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const {authtext,event, id} = this.state;
-    const errors = validate(authtext,event);
+    const {authtext,sponsor, id} = this.state;
+    const errors = validate(authtext,sponsor);
     
     const data = {
       authtext:authtext,
-      event:event
+      sponsor:sponsor
     }
-
+    const output = JSON.stringify(data);
     if(errors.length > 0){
       document.getElementById("errortext").innerHTML = "<p>" + errors.join("</p><p>") + "</p>";
         return;
@@ -127,15 +128,15 @@ class TextFields extends React.Component {
                 method : 'POST',
                 headers : {
                   'key' : authtext,
-                  'event_id': this.getEventID(event),
+                  'event_id': this.getSponsorID(sponsor),
                 }
               }).then(res => res.json())
               .then(response => console.log('Success:', JSON.stringify(response)))
               .catch(error => console.error('Error:', error)); 
-              getEvents(geturl);
-              this.setState({authtext:"", event: ""});
+              getSponsors(geturl);
+              this.setState({authtext:"", sponsor: ""});
               document.getElementById("errortext").innerHTML = "";
-              document.getElementById("successtext").innerHTML = "Event Successfully Deleted!";
+              document.getElementById("successtext").innerHTML = "Sponsor Successfully Deleted!";
             }
           },
           {
@@ -175,10 +176,10 @@ class TextFields extends React.Component {
         <TextField
           id="select-event"
           select
-          label="Select Event"
+          label="Select Sponsor"
           className={classes.textFieldOptions}
-          value = {this.state.event}
-          onChange={this.handleChange('event')}
+          value = {this.state.sponsor}
+          onChange={this.handleChange('sponsor')}
           SelectProps={{
             MenuProps: {
               className: classes.menu,
@@ -188,7 +189,7 @@ class TextFields extends React.Component {
           required
         >
 
-          {events.map(option => (
+          {sponsors.map(option => (
             <MenuItem key={option} value={option}>
               {option}
             </MenuItem>
