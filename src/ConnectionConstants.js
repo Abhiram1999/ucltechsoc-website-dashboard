@@ -1,4 +1,4 @@
-const rootDomain = "https://exesto.serveo.net";
+const rootDomain = "https://immense-journey-83442.herokuapp.com";
 const addEventLink = "/addevent";
 const getEventsLink = "/getevents";
 const deleteEventsLink = '/deleteevent';
