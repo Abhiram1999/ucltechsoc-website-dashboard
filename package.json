@@ -2,7 +2,7 @@
   "name": "website_dashboard",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://www.ucltechsoc.com/dashboard_build",
+  "homepage": "https://www.ucltechsoc.com/dashboard",
   "dependencies": {
     "@material-ui/core": "^3.0.1",
     "gh-pages": "^1.2.0",
