@@ -188,8 +188,8 @@ class TextFields extends React.Component {
     const data = {
         title : title,
         type : type,
-        date : formatDate(finalDate),
-        time : formatTime(finalTime),
+        date : formatDate(date),
+        time : formatTime(time),
         location: location,
         link: formatLinks(link),
         img_url : formatLinks(img_url)
