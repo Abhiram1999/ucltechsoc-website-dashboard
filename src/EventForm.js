@@ -7,7 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import { confirmAlert } from 'react-confirm-alert'; 
 import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 import EventCard from './EventCard.js';
-import {rootDomain,addEventLink} from "./ConnectionConstants.js";
+import {rootDomain,eventLink} from "./ConnectionConstants.js";
 import InputAdornment from '@material-ui/core/InputAdornment';
 //7334D4CA5D474
 var currentDate = new Date();
@@ -57,9 +57,10 @@ function submitForm(url,authtext,output){
     fetch(url, {
         method: 'POST', 
         headers:{
-          'key': authtext,
-          'event': output
-        }
+          'Content-Type': 'application/json',
+          'key': authtext
+        },
+        body: output
       }).then(res => res.json())
       .then(response => console.log('Success:', JSON.stringify(response)))
       .catch(error => console.error('Error:', error));
@@ -182,10 +183,11 @@ class TextFields extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
     const {authtext,title,type,date,time,location,link,img_url} = this.state;
-    console.log(img_url);
     const errors = validate(authtext,title,date,time,location,link);
 
-    const data = {
+    const dataToSend = {
+      id: 0,
+      data:{
         title : title,
         type : type,
         date : formatDate(finalDate),
@@ -194,10 +196,10 @@ class TextFields extends React.Component {
         link: formatLinks(link),
         img_url : formatLinks(img_url)
       }
-       const output = JSON.stringify(data);
+      }
+       const output = JSON.stringify(dataToSend);
       
-      var url = rootDomain + addEventLink;
-      console.log(url,authtext,output);
+      var url = rootDomain + eventLink;
     if (errors.length > 0) {
         
         this.setState({ errors });

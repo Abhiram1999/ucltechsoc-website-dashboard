@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import { confirmAlert } from 'react-confirm-alert'; 
-import {rootDomain, getEventsLink,deleteEventsLink} from './ConnectionConstants';
+import {rootDomain, eventLink} from './ConnectionConstants';
 const styles = theme => ({
   container: {
     display: 'flex',
@@ -69,10 +69,9 @@ function validate(authtext,event){
   return errors;
 }
 
-const delurl = rootDomain + deleteEventsLink;
-const geturl = rootDomain + getEventsLink;
+const url = rootDomain + eventLink;
 //Uncomment the below line when the server is running
-getEvents(geturl);
+getEvents(url);
 
 class TextFields extends React.Component {
   state = {
@@ -123,16 +122,17 @@ class TextFields extends React.Component {
           {
             label: 'Yes',
             onClick: () => {
-               fetch(delurl,{
-                method : 'POST',
+               fetch(url + "/" + this.getEventID(event),
+               {
+                method : 'DELETE',
                 headers : {
-                  'key' : authtext,
-                  'event_id': this.getEventID(event),
+                  'Content-Type': 'application/json',
+                  'key' : authtext
                 }
               }).then(res => res.json())
               .then(response => console.log('Success:', JSON.stringify(response)))
               .catch(error => console.error('Error:', error)); 
-              getEvents(geturl);
+              getEvents(url);
               this.setState({authtext:"", event: ""});
               document.getElementById("errortext").innerHTML = "";
               document.getElementById("successtext").innerHTML = "Event Successfully Deleted!";

@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import { confirmAlert } from 'react-confirm-alert'; 
-import {rootDomain, getSponsorsLink,deleteSponsorsLink} from './ConnectionConstants';
+import {rootDomain, sponsorLink} from './ConnectionConstants';
 const styles = theme => ({
   container: {
     display: 'flex',
@@ -53,7 +53,6 @@ function getSponsors(url){
     //alert("Site not working");
     console.log(networkError.message)}
 ).then(jsonResponse => {
-    console.log(jsonResponse);
   renderResponse(jsonResponse);
 })
 }
@@ -70,11 +69,10 @@ function validate(authtext,sponsor){
   return errors;
 }
 
-const delurl = rootDomain + deleteSponsorsLink;
-const geturl = rootDomain + getSponsorsLink;
+const url = rootDomain + sponsorLink;
 //Uncomment the below line when the server is running
-getSponsors(geturl);
-console.log(sponsors);
+getSponsors(url);
+
 class TextFields extends React.Component {
   state = {
     authtext:'',
@@ -94,7 +92,8 @@ class TextFields extends React.Component {
         index = i;
       }
     }
-    if(index != -1){
+    console.log(index);
+    if(index !== -1){
       return sponsorIDs[index];
     } else {
       return index;
@@ -110,7 +109,7 @@ class TextFields extends React.Component {
       authtext:authtext,
       sponsor:sponsor
     }
-    const output = JSON.stringify(data);
+
     if(errors.length > 0){
       document.getElementById("errortext").innerHTML = "<p>" + errors.join("</p><p>") + "</p>";
         return;
@@ -124,16 +123,17 @@ class TextFields extends React.Component {
           {
             label: 'Yes',
             onClick: () => {
-               fetch(delurl,{
-                method : 'POST',
+               fetch(url + "/" + this.getSponsorID(sponsor),
+               {
+                method : 'DELETE',
                 headers : {
+                  'Content-Type': 'application/json',
                   'key' : authtext,
-                  'sponsor_id': this.getSponsorID(sponsor),
                 }
               }).then(res => res.json())
               .then(response => console.log('Success:', JSON.stringify(response)))
               .catch(error => console.error('Error:', error)); 
-              getSponsors(geturl);
+              getSponsors(url);
               this.setState({authtext:"", sponsor: ""});
               document.getElementById("errortext").innerHTML = "";
               document.getElementById("successtext").innerHTML = "Sponsor Successfully Deleted!";

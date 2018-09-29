@@ -6,7 +6,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import EventForm from './EventForm';
-import DeleteEvent from './DeleteEvent'
+import DeleteEvent from './DeleteEvent';
 import SponsorForm from './SponsorForm';
 import DeleteSponsor from './DeleteSponsor';
 function TabContainer(props) {

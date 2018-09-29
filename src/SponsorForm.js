@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import {rootDomain,addSponsorLink} from './ConnectionConstants'
+import {rootDomain,sponsorLink} from './ConnectionConstants'
 import { confirmAlert } from 'react-confirm-alert'; 
 import { relative } from 'path';
 const styles = theme => ({
@@ -30,12 +30,14 @@ const tiers = [
 ];
 
 function submitForm(url,authtext,output){
-    fetch(url, {
-        method: 'POST', 
-        headers:{
-          'key': authtext,
-          'sponsor': output
-        }
+  console.log(output);
+  fetch(url, {
+    method: 'POST', 
+    headers:{
+      'Content-Type': 'application/json',
+      'key': authtext
+    },
+      body: output
       }).then(res => res.json())
       .then(response => console.log('Success:', JSON.stringify(response)))
       .catch(error => console.error('Error:', error));
@@ -94,15 +96,17 @@ class TextFields extends React.Component {
     e.preventDefault();
     const {authtext,name,tier,img_url} = this.state;
     const errors = validate(authtext,name,tier,img_url);
-    const data = {
+    const dataToSend = {
+      id: 0,
+      sponsor:{
         name:name,
         tier:tier,
         img_url:img_url
-
+      }
     }
 
-    const output = JSON.stringify(data);
-    var sponsorurl = rootDomain + addSponsorLink;
+    const output = JSON.stringify(dataToSend);
+    var sponsorurl = rootDomain + sponsorLink;
     if(errors.length > 0){
         document.getElementById("errortext").innerHTML = "<p>" + errors.join("</p><p>") + "</p>";
         return;
