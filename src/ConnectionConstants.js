@@ -1,4 +1,4 @@
-const rootDomain = "https://evening-brook-19862.herokuapp.com";
+const rootDomain = "https://techsocbackend.azurewebsites.net";
 const eventLink = "/events";
 const sponsorLink = "/sponsors";
 
