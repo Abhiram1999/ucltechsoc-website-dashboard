@@ -201,7 +201,7 @@ class TextFields extends React.Component {
 
         <TextField
           id="multiline-static"
-          label="Image Url"
+          label="Image URL"
           multiline
           rows="1"
           //defaultValue="Default Value"
@@ -209,14 +209,15 @@ class TextFields extends React.Component {
           className={classes.textField}
           margin="normal"
           onChange = {this.handleChange('img_url')}
-          InputProps={{
-            startAdornment: <InputAdornment position="start">https://</InputAdornment>,
-          }}
+          helperText="Please enter URL starting with http://"
+          // InputProps={{
+          //   startAdornment: <InputAdornment position="start">https://</InputAdornment>,
+          // }}
         />
 
         <TextField
           id="multiline-static"
-          label="Company Homepage Url"
+          label="Company Homepage URL"
           multiline
           rows="1"
           //defaultValue="Default Value"
@@ -224,9 +225,10 @@ class TextFields extends React.Component {
           className={classes.textField}
           margin="normal"
           onChange = {this.handleChange('home_url')}
-          InputProps={{
-            startAdornment: <InputAdornment position="start">https://</InputAdornment>,
-          }}
+          helperText="Please enter URL starting with http://"
+          // InputProps={{
+          //  startAdornment: <InputAdornment position="start">https://</InputAdornment>,
+          // }}
         />
         
         
