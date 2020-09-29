@@ -50,7 +50,7 @@ function formatLinks(linkString){
     return linkString;
   }
 
-  function validate(authtext,name,tier,img_url) {
+  function validate(authtext,name,tier,img_url, home_url) {
 
     const errors = [];
     //console.log(date + "T" + time);
@@ -71,8 +71,10 @@ function formatLinks(linkString){
         errors.push("Image Url can't be empty");
       }
 
-
-    
+      if (home_url.length === 0) {
+        errors.push("Image Url can't be empty");
+      }
+ 
     return errors;
   }
 
@@ -82,8 +84,8 @@ class TextFields extends React.Component {
     authtext:'',
     name: '',
     tier:'',
-    img_url:''
-    
+    img_url:'',
+    home_url:''
   };
 
   handleChange = name => event => {
@@ -94,14 +96,15 @@ class TextFields extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const {authtext,name,tier,img_url} = this.state;
-    const errors = validate(authtext,name,tier,img_url);
+    const {authtext,name,tier,img_url, home_url} = this.state;
+    const errors = validate(authtext,name,tier,img_url, home_url);
     const dataToSend = {
       id: 0,
       sponsor:{
         name:name,
         tier:tier,
-        img_url:img_url
+        img_url:img_url,
+        home_url:home_url
       }
     }
 
@@ -206,6 +209,21 @@ class TextFields extends React.Component {
           className={classes.textField}
           margin="normal"
           onChange = {this.handleChange('img_url')}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">https://</InputAdornment>,
+          }}
+        />
+
+        <TextField
+          id="multiline-static"
+          label="Company Homepage Url"
+          multiline
+          rows="1"
+          //defaultValue="Default Value"
+          value = {this.state.home_url}
+          className={classes.textField}
+          margin="normal"
+          onChange = {this.handleChange('home_url')}
           InputProps={{
             startAdornment: <InputAdornment position="start">https://</InputAdornment>,
           }}
