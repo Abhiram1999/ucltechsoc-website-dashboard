@@ -1,3 +1,5 @@
+A simple to use dashboard to add and delete events and sponsors to the UCL TechSoc website. 
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
